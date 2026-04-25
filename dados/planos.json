@@ -1,0 +1,21 @@
+[
+
+     {
+        "id": 1,
+        "id_cliente": 1,
+        "objetivo": "ganhar massa",
+        "lista_exercicios": [
+            "Supino",
+            "Agachamento",
+            "Bicep Curl",
+            "Remada"
+        ],
+        "dias_semana": 3
+    }
+
+
+
+
+
+
+]
