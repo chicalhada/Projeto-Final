@@ -1,11 +1,16 @@
 [
-
-{
-  "id": 1,
-  "nome": "João",
-  "idade": 20,
-  "peso": 70,
-  "objetivo": "ganhar massa"     
-}
-
+    {
+        "id": 1,
+        "nome": "Jo\u00c3\u00a3o",
+        "idade": 20,
+        "peso": 70,
+        "objetivo": "ganhar massa"
+    },
+    {
+        "id": 2,
+        "nome": "Mau Feitor",
+        "idade": 15,
+        "peso": 50.0,
+        "objetivo": "ganhar massa"
+    }
 ]

@@ -1,6 +1,5 @@
 [
-
-     {
+    {
         "id": 1,
         "id_cliente": 1,
         "objetivo": "ganhar massa",
@@ -11,11 +10,27 @@
             "Remada"
         ],
         "dias_semana": 3
+    },
+    {
+        "id": 2,
+        "id_cliente": 1,
+        "objetivo": "Bicep",
+        "lista_exercicios": [
+            "Bicicleta",
+            "Supino",
+            "Flex\u00f5es"
+        ],
+        "dias_semana": 2
+    },
+    {
+        "id": 3,
+        "id_cliente": 2,
+        "objetivo": "Bicep",
+        "lista_exercicios": [
+            "Supino",
+            "Bicicleta",
+            "Corrida"
+        ],
+        "dias_semana": 2
     }
-
-
-
-
-
-
 ]

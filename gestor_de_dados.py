@@ -9,8 +9,11 @@ def guardar_ficheiro(nome_ficheiro, dados):
         json.dump(dados, f, indent=4)
 
 def ler_ficheiro(nome_ficheiro):
-    with open(nome_ficheiro, "r") as f:
-        return json.load(f)
+    try:
+        with open(nome_ficheiro, "r") as f:
+            return json.load(f)
+    except:
+        return []
 
 ###################################### Clientes
 
