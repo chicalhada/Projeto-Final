@@ -12,5 +12,12 @@
         "idade": 15,
         "peso": 50.0,
         "objetivo": "ganhar massa"
+    },
+    {
+        "id": 3,
+        "nome": "Daniel",
+        "idade": 14,
+        "peso": 55.0,
+        "objetivo": "perder gordura"
     }
 ]

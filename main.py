@@ -51,7 +51,24 @@ class ClientesFrame(tk.Frame):
 
         tk.Label(self, text="Clientes", font=("Arial", 16)).pack(pady=10)
 
-        self.lista = tk.Listbox(self)
+        style = ttk.Style()
+        style.configure("Treeview", rowheight=25, borderwidth=1, relief="solid")
+        style.configure("Treeview.Heading", borderwidth=1, relief="solid")
+
+        self.lista = ttk.Treeview(self, columns=("ID", "Nome", "Idade", "Peso", "Objetivo"), show="headings")
+
+        self.lista.heading("ID", text="ID")
+        self.lista.heading("Nome", text="Nome")
+        self.lista.heading("Idade", text="Idade")
+        self.lista.heading("Peso", text="Peso")
+        self.lista.heading("Objetivo", text="Objetivo")
+
+        self.lista.column("ID", width=40, anchor="center")
+        self.lista.column("Nome", width=120, anchor="center")
+        self.lista.column("Idade", width=60, anchor="center")
+        self.lista.column("Peso", width=60, anchor="center")
+        self.lista.column("Objetivo", width=120, anchor="center")
+
         self.lista.pack(fill="both", expand=True, padx=20, pady=10)
 
         form = tk.Frame(self)
@@ -107,9 +124,17 @@ class ClientesFrame(tk.Frame):
         self.atualizar()
 
     def atualizar(self):
-        self.lista.delete(0, tk.END)
+        for item in self.lista.get_children():
+            self.lista.delete(item)
+
         for c in gd.ler_cliente():
-            self.lista.insert(tk.END, f"{c['id']} - {c['nome']}")
+            self.lista.insert("", "end", values=(
+                c["id"],
+                c["nome"],
+                c["idade"],
+                c["peso"],
+                c["objetivo"]
+            ))
 
 
 # ---------------------- PLANOS ----------------------
