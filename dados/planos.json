@@ -32,5 +32,16 @@
             "Corrida"
         ],
         "dias_semana": 2
+    },
+    {
+        "id": 4,
+        "id_cliente": 4,
+        "objetivo": "ganhar massa",
+        "lista_exercicios": [
+            "Flex\u00f5es",
+            "Agachamento",
+            "Supino"
+        ],
+        "dias_semana": 9
     }
 ]

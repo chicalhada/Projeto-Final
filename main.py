@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, ttk
 import gestor_de_dados as gd
 from modelos_de_dados import Cliente, PlanoTreino, SessaoTreino
 import random
@@ -9,6 +9,16 @@ def gerar_id(lista):
     if not lista:
         return 1
     return max(item["id"] for item in lista) + 1
+
+
+def cliente_existe(id_cliente):
+    clientes = gd.ler_cliente()
+    return any(c["id"] == id_cliente for c in clientes)
+
+
+def obter_clientes_combo():
+    clientes = gd.ler_cliente()
+    return [f"{c['nome']} ({c['id']})" for c in clientes]
 
 
 # ---------------------- INICIO ----------------------
@@ -113,9 +123,9 @@ class PlanosFrame(tk.Frame):
         self.lista = tk.Listbox(self)
         self.lista.pack(fill="both", expand=True, padx=20, pady=10)
 
-        self.entry_cliente = tk.Entry(self)
+        self.entry_cliente = ttk.Combobox(self, values=obter_clientes_combo())
         self.entry_cliente.pack()
-        self.entry_cliente.insert(0, "ID Cliente")
+        self.entry_cliente.set("Selecionar cliente")
 
         self.objetivo = tk.Entry(self)
         self.objetivo.pack()
@@ -132,10 +142,15 @@ class PlanosFrame(tk.Frame):
 
     def gerar(self):
         try:
-            id_cliente = int(self.entry_cliente.get())
+            texto = self.entry_cliente.get()
+            id_cliente = int(texto.split("(")[-1].replace(")", ""))
             dias = int(self.dias.get())
         except:
             messagebox.showerror("Erro", "Valores inválidos")
+            return
+
+        if not cliente_existe(id_cliente):
+            messagebox.showerror("Erro", "Cliente não existe")
             return
 
         objetivo = self.objetivo.get()
@@ -168,9 +183,9 @@ class SessoesFrame(tk.Frame):
         self.lista = tk.Listbox(self)
         self.lista.pack(fill="both", expand=True, padx=20, pady=10)
 
-        self.id_cliente = tk.Entry(self)
+        self.id_cliente = ttk.Combobox(self, values=obter_clientes_combo())
         self.id_cliente.pack()
-        self.id_cliente.insert(0, "ID Cliente")
+        self.id_cliente.set("Selecionar cliente")
 
         self.data = tk.Entry(self)
         self.data.pack()
@@ -187,10 +202,15 @@ class SessoesFrame(tk.Frame):
 
     def adicionar(self):
         try:
-            id_cliente = int(self.id_cliente.get())
+            texto = self.id_cliente.get()
+            id_cliente = int(texto.split("(")[-1].replace(")", ""))
             duracao = float(self.duracao.get())
         except:
             messagebox.showerror("Erro", "Valores inválidos")
+            return
+
+        if not cliente_existe(id_cliente):
+            messagebox.showerror("Erro", "Cliente não existe")
             return
 
         data = self.data.get()

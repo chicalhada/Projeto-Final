@@ -22,5 +22,11 @@
         "id_cliente": 2,
         "data": "asdas",
         "duracao": 1.0
+    },
+    {
+        "id": 5,
+        "id_cliente": 4,
+        "data": "2009-12-27",
+        "duracao": 2.0
     }
 ]
