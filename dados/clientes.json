@@ -1,23 +1,16 @@
 [
     {
         "id": 1,
-        "nome": "Jo\u00c3\u00a3o",
-        "idade": 20,
-        "peso": 70,
+        "nome": "M\u00e1rio",
+        "idade": 18,
+        "peso": 62.0,
         "objetivo": "ganhar massa"
     },
     {
         "id": 2,
-        "nome": "Mau Feitor",
-        "idade": 15,
-        "peso": 50.0,
-        "objetivo": "ganhar massa"
-    },
-    {
-        "id": 3,
-        "nome": "Daniel",
-        "idade": 14,
-        "peso": 55.0,
-        "objetivo": "perder gordura"
+        "nome": "Felipe",
+        "idade": 17,
+        "peso": 140.0,
+        "objetivo": "perder peso"
     }
 ]
