@@ -2,31 +2,49 @@
     {
         "id": 1,
         "id_cliente": 1,
-        "data": "2026-04-20",
-        "duracao": 60
+        "data": "2026-04-26",
+        "duracao": 90.0
     },
     {
         "id": 2,
-        "id_cliente": 2,
-        "data": "2026-05-01",
-        "duracao": 1.0
+        "id_cliente": 1,
+        "data": "2026-05-03",
+        "duracao": 90.0
     },
     {
         "id": 3,
         "id_cliente": 2,
-        "data": "asdas",
-        "duracao": 1.0
+        "data": "2026-04-07",
+        "duracao": 45.0
     },
     {
         "id": 4,
         "id_cliente": 2,
-        "data": "asdas",
-        "duracao": 1.0
+        "data": "2026-04-23",
+        "duracao": 45.0
     },
     {
         "id": 5,
+        "id_cliente": 3,
+        "data": "2026-04-07",
+        "duracao": 30.0
+    },
+    {
+        "id": 6,
         "id_cliente": 4,
-        "data": "2009-12-27",
-        "duracao": 2.0
+        "data": "2026-05-09",
+        "duracao": 60.0
+    },
+    {
+        "id": 7,
+        "id_cliente": 4,
+        "data": "2026-04-30",
+        "duracao": 60.0
+    },
+    {
+        "id": 8,
+        "id_cliente": 4,
+        "data": "2026-04-09",
+        "duracao": 60.0
     }
 ]

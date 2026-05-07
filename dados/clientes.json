@@ -1,16 +1,30 @@
 [
     {
         "id": 1,
-        "nome": "M\u00e1rio",
-        "idade": 18,
-        "peso": 62.0,
-        "objetivo": "ganhar massa"
+        "nome": "Daniel",
+        "idade": 14,
+        "peso": 56.8,
+        "objetivo": "Ganhar Massa"
     },
     {
         "id": 2,
+        "nome": "Alex",
+        "idade": 19,
+        "peso": 72.2,
+        "objetivo": "Perder Peso"
+    },
+    {
+        "id": 3,
         "nome": "Felipe",
         "idade": 17,
-        "peso": 140.0,
-        "objetivo": "perder peso"
+        "peso": 135.2,
+        "objetivo": "Perder Peso"
+    },
+    {
+        "id": 4,
+        "nome": "Jose",
+        "idade": 33,
+        "peso": 59.8,
+        "objetivo": "Ganhar Massa"
     }
 ]

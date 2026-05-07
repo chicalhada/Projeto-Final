@@ -3,6 +3,8 @@ from tkinter import messagebox, ttk
 import gestor_de_dados as gd
 from modelos_de_dados import Cliente, PlanoTreino, SessaoTreino
 import random
+from datetime import *
+from collections import Counter
 
 
 def gerar_id(lista):
@@ -68,9 +70,9 @@ class ClientesFrame(tk.Frame):
 
         self.lista.column("ID", width=40, anchor="center")
         self.lista.column("Nome", width=120, anchor="center")
-        self.lista.column("Idade", width=60, anchor="center")
-        self.lista.column("Peso", width=60, anchor="center")
-        self.lista.column("Objetivo", width=120, anchor="center")
+        self.lista.column("Idade", width=80, anchor="center")
+        self.lista.column("Peso", width=80, anchor="center")
+        self.lista.column("Objetivo", width=140, anchor="center")
 
         self.lista.grid(row=1, column=0, sticky="nsew", padx=20, pady=10)
 
@@ -82,16 +84,19 @@ class ClientesFrame(tk.Frame):
         self.nome.grid(row=0, column=1)
 
         tk.Label(form, text="Idade").grid(row=1, column=0)
-        self.idade = tk.Entry(form)
+        self.idade = ttk.Combobox(form, values=[str(i) for i in range(14, 81)])
         self.idade.grid(row=1, column=1)
+        self.idade.set("Idade")
 
         tk.Label(form, text="Peso").grid(row=2, column=0)
-        self.peso = tk.Entry(form)
+        self.peso = ttk.Combobox(form, values=[str(i) for i in range(40, 151)])
         self.peso.grid(row=2, column=1)
+        self.peso.set("Peso")
 
         tk.Label(form, text="Objetivo").grid(row=3, column=0)
-        self.objetivo = tk.Entry(form)
+        self.objetivo = ttk.Combobox(form, values=["Ganhar Massa", "Perder Peso"])
         self.objetivo.grid(row=3, column=1)
+        self.objetivo.set("Objetivo")
 
         botoes = tk.Frame(self, bg="#B3E5FC")
         botoes.grid(row=3, column=0, sticky="ew", padx=20, pady=10)
@@ -115,8 +120,12 @@ class ClientesFrame(tk.Frame):
         nome = self.nome.get().strip()
         objetivo = self.objetivo.get().strip()
 
-        if not nome or not objetivo:
-            messagebox.showerror("Erro", "Campos vazios")
+        if objetivo == "Objetivo":
+            messagebox.showerror("Erro", "Seleciona um objetivo")
+            return
+
+        if not nome:
+            messagebox.showerror("Erro", "Nome vazio")
             return
 
         clientes = gd.ler_cliente()
@@ -126,67 +135,9 @@ class ClientesFrame(tk.Frame):
         gd.guardar_cliente(cliente)
 
         self.nome.delete(0, tk.END)
-        self.idade.delete(0, tk.END)
-        self.peso.delete(0, tk.END)
-        self.objetivo.delete(0, tk.END)
-
-        self.atualizar()
-
-    def apagar(self):
-        selecionado = self.lista.selection()
-
-        if not selecionado:
-            messagebox.showerror("Erro", "Nenhum cliente selecionado")
-            return
-
-        item = self.lista.item(selecionado)
-        id_cliente = item["values"][0]
-
-        clientes = gd.ler_cliente()
-        clientes = [c for c in clientes if c["id"] != id_cliente]
-
-        gd.guardar_ficheiro("dados/clientes.json", clientes)
-
-        self.atualizar()
-
-    def atualizar(self):
-        for item in self.lista.get_children():
-            self.lista.delete(item)
-
-        for c in gd.ler_cliente():
-            self.lista.insert("", "end", values=(
-                c["id"],
-                c["nome"],
-                c["idade"],
-                c["peso"],
-                c["objetivo"]
-            ))
-
-    def adicionar(self):
-        try:
-            idade = int(self.idade.get())
-            peso = float(self.peso.get())
-        except:
-            messagebox.showerror("Erro", "Valores inválidos")
-            return
-
-        nome = self.nome.get().strip()
-        objetivo = self.objetivo.get().strip()
-
-        if not nome or not objetivo:
-            messagebox.showerror("Erro", "Campos vazios")
-            return
-
-        clientes = gd.ler_cliente()
-        novo_id = gerar_id(clientes)
-
-        cliente = Cliente(novo_id, nome, idade, peso, objetivo)
-        gd.guardar_cliente(cliente)
-
-        self.nome.delete(0, tk.END)
-        self.idade.delete(0, tk.END)
-        self.peso.delete(0, tk.END)
-        self.objetivo.delete(0, tk.END)
+        self.idade.set("Idade")
+        self.peso.set("Peso")
+        self.objetivo.set("Objetivo")
 
         self.atualizar()
 
@@ -230,26 +181,24 @@ class PlanosFrame(tk.Frame):
 
         tk.Label(self, text="Planos", font=("Arial", 16)).grid(row=0, column=0, pady=10)
 
-        style = ttk.Style()
-        style.configure("Treeview", rowheight=25, borderwidth=1, relief="solid")
-        style.configure("Treeview.Heading", borderwidth=1, relief="solid")
-
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
-        self.lista = ttk.Treeview(self, columns=("ID", "Cliente", "Objetivo", "Exercícios", "Dias"), show="headings")
+        self.lista = ttk.Treeview(
+            self,
+            columns=("ID", "Cliente", "Objetivo", "Exercícios", "Dias"),
+            show="headings"
+        )
 
-        self.lista.heading("ID", text="ID")
-        self.lista.heading("Cliente", text="Cliente")
-        self.lista.heading("Objetivo", text="Objetivo")
-        self.lista.heading("Exercícios", text="Exercícios")
-        self.lista.heading("Dias", text="Dias")
-
-        self.lista.column("ID", width=40, anchor="center")
-        self.lista.column("Cliente", width=80, anchor="center")
-        self.lista.column("Objetivo", width=120, anchor="center")
-        self.lista.column("Exercícios", width=200, anchor="center")
-        self.lista.column("Dias", width=60, anchor="center")
+        for col, w in [
+            ("ID", 40),
+            ("Cliente", 140),
+            ("Objetivo", 120),
+            ("Exercícios", 200),
+            ("Dias", 60),
+        ]:
+            self.lista.heading(col, text=col)
+            self.lista.column(col, width=w, anchor="center")
 
         self.lista.grid(row=1, column=0, sticky="nsew", padx=20, pady=10)
 
@@ -257,39 +206,54 @@ class PlanosFrame(tk.Frame):
         form.grid(row=2, column=0, pady=10)
 
         tk.Label(form, text="Cliente").grid(row=0, column=0)
-        self.entry_cliente = ttk.Combobox(form, values=obter_clientes_combo())
+        self.entry_cliente = ttk.Combobox(form, state="readonly")
         self.entry_cliente.grid(row=0, column=1)
-        self.entry_cliente.set("Selecionar cliente")
 
         tk.Label(form, text="Objetivo").grid(row=1, column=0)
-        self.objetivo = tk.Entry(form)
+        self.objetivo = ttk.Combobox(form, values=["Ganhar Massa", "Perder Peso"], state="readonly")
         self.objetivo.grid(row=1, column=1)
+        self.objetivo.current(0)
 
-        tk.Label(form, text="Dias/semana").grid(row=2, column=0)
-        self.dias = tk.Entry(form)
+        tk.Label(form, text="Dias").grid(row=2, column=0)
+        self.dias = ttk.Combobox(form, values=["1","2","3","4","5","6","7"], state="readonly")
         self.dias.grid(row=2, column=1)
+        self.dias.current(2)
 
         botoes = tk.Frame(self, bg="#B3E5FC")
         botoes.grid(row=3, column=0, sticky="ew", padx=20, pady=10)
 
         botoes.grid_columnconfigure(0, weight=1)
 
-        tk.Button(botoes, text="Voltar", command=lambda: app.show_frame("Inicio")).grid(row=0, column=0, sticky="w")
+        tk.Button(botoes, text="Voltar", command=lambda: self.app.show_frame("Inicio")).grid(row=0, column=0, sticky="w")
         tk.Button(botoes, text="Gerar Plano", command=self.gerar).grid(row=0, column=1)
         tk.Button(botoes, text="Apagar Plano", command=self.apagar).grid(row=0, column=2, sticky="e")
+        tk.Button(botoes, text="Atualizar", command=self.atualizar).grid(row=0, column=3)
 
         self.atualizar()
 
-    def escolher_categoria(self, objetivo):
-        objetivo = objetivo.lower()
+    def parse_cliente(self, texto):
+        try:
+            return int(texto.split("(")[-1].replace(")", "").strip())
+        except:
+            return None
 
-        if objetivo == "ganhar massa":
-            return ["forca"]
-        elif objetivo == "perder peso":
-            return ["cardio"]
+    def carregar_clientes(self):
+        clientes = gd.ler_cliente()
+        valores = [f"{c['nome']} ({c['id']})" for c in clientes if isinstance(c, dict)]
+        self.entry_cliente["values"] = valores
+        if valores:
+            self.entry_cliente.set(valores[0])
         else:
-            return ["forca", "cardio", "core"]
+            self.entry_cliente.set("Sem clientes")
 
+    def limpar_orfaos(self):
+        clientes = gd.ler_cliente()
+        ids_validos = {int(c["id"]) for c in clientes if isinstance(c, dict)}
+
+        planos = gd.ler_plano()
+        planos = [p for p in planos if int(p.get("id_cliente")) in ids_validos]
+
+        gd.guardar_ficheiro("dados/planos.json", planos)
 
     def gerar_exercicios(self, objetivo, dias):
         EXERCICIOS = {
@@ -298,35 +262,48 @@ class PlanosFrame(tk.Frame):
             "core": ["Abdominais", "Prancha"]
         }
 
-        categorias = self.escolher_categoria(objetivo)
+        objetivo = objetivo.lower()
+
+        if "massa" in objetivo:
+            cats = ["forca"]
+        elif "peso" in objetivo:
+            cats = ["cardio"]
+        else:
+            cats = ["forca", "cardio", "core"]
 
         pool = []
-        for c in categorias:
+        for c in cats:
             pool.extend(EXERCICIOS[c])
 
-        quantidade = min(2 + dias // 2, len(pool))
-
+        quantidade = min(2 + int(dias) // 2, len(pool))
         return random.sample(pool, quantidade)
 
+    def atualizar(self):
+        self.limpar_orfaos()
+        self.carregar_clientes()
+
+        self.lista.delete(*self.lista.get_children())
+
+        for p in gd.ler_plano():
+            self.lista.insert("", "end", values=(
+                p.get("id"),
+                p.get("id_cliente"),
+                p.get("objetivo"),
+                ", ".join(p.get("lista_exercicios", [])),
+                p.get("dias_semana"),
+            ))
 
     def gerar(self):
-        try:
-            texto = self.entry_cliente.get()
-            id_cliente = int(texto.split("(")[-1].replace(")", ""))
-            dias = int(self.dias.get())
-        except:
-            messagebox.showerror("Erro", "Valores inválidos")
+        id_cliente = self.parse_cliente(self.entry_cliente.get())
+        if id_cliente is None:
             return
 
         if not cliente_existe(id_cliente):
-            messagebox.showerror("Erro", "Cliente não existe")
+            self.atualizar()
             return
 
+        dias = int(self.dias.get())
         objetivo = self.objetivo.get()
-
-        if objetivo == "Selecionar objetivo":
-            messagebox.showerror("Erro", "Seleciona um objetivo")
-            return
 
         lista = self.gerar_exercicios(objetivo, dias)
 
@@ -336,96 +313,150 @@ class PlanosFrame(tk.Frame):
         plano = PlanoTreino(novo_id, id_cliente, objetivo, lista, dias)
         gd.guardar_plano(plano)
 
-        self.objetivo.set("Selecionar objetivo")
-        self.dias.delete(0, tk.END)
-
         self.atualizar()
 
     def apagar(self):
-        selecionado = self.lista.selection()
-
-        if not selecionado:
-            messagebox.showerror("Erro", "Nenhum plano selecionado")
+        sel = self.lista.selection()
+        if not sel:
             return
 
-        item = self.lista.item(selecionado)
-        id_plano = item["values"][0]
+        id_plano = self.lista.item(sel)["values"][0]
 
         planos = gd.ler_plano()
-        planos = [p for p in planos if p["id"] != id_plano]
+        planos = [p for p in planos if p.get("id") != id_plano]
 
         gd.guardar_ficheiro("dados/planos.json", planos)
-
         self.atualizar()
-
-    def atualizar(self):
-        for item in self.lista.get_children():
-            self.lista.delete(item)
-
-        for p in gd.ler_plano():
-            self.lista.insert("", "end", values=(
-                p["id"],
-                p["id_cliente"],
-                p["objetivo"],
-                 (p["lista_exercicios"]),
-                 p["dias_semana"]
-                ))
-                
+            
 # ---------------------- SESSÕES ----------------------
 
 class SessoesFrame(tk.Frame):
     def __init__(self, parent, app):
         super().__init__(parent)
+        self.app = app
 
-        tk.Label(self, text="Sessões", font=("Arial", 16)).pack(pady=10)
+        tk.Label(self, text="Sessões", font=("Arial", 16)).grid(row=0, column=0, pady=10)
 
-        self.lista = tk.Listbox(self)
-        self.lista.pack(fill="both", expand=True, padx=20, pady=10)
+        self.grid_rowconfigure(1, weight=1)
+        self.grid_columnconfigure(0, weight=1)
 
-        self.id_cliente = ttk.Combobox(self, values=obter_clientes_combo())
-        self.id_cliente.pack()
-        self.id_cliente.set("Selecionar cliente")
+        self.lista = ttk.Treeview(
+            self,
+            columns=("ID", "Cliente", "Data", "Duração"),
+            show="headings"
+        )
 
-        self.data = tk.Entry(self)
-        self.data.pack()
-        self.data.insert(0, "YYYY-MM-DD")
+        for col, w in [
+            ("ID", 60),
+            ("Cliente", 120),
+            ("Data", 120),
+            ("Duração", 80),
+        ]:
+            self.lista.heading(col, text=col)
+            self.lista.column(col, width=w, anchor="center")
 
-        self.duracao = tk.Entry(self)
-        self.duracao.pack()
-        self.duracao.insert(0, "Duração")
+        self.lista.grid(row=1, column=0, sticky="nsew", padx=20, pady=10)
 
-        tk.Button(self, text="Adicionar Sessão", command=self.adicionar).pack(pady=5)
-        tk.Button(self, text="Voltar", command=lambda: app.show_frame("Inicio")).pack()
+        form = tk.Frame(self)
+        form.grid(row=2, column=0, pady=10)
+
+        tk.Label(form, text="Cliente").grid(row=0, column=0)
+        self.id_cliente = ttk.Combobox(form, state="readonly")
+        self.id_cliente.grid(row=0, column=1)
+
+        tk.Label(form, text="Data").grid(row=1, column=0)
+        self.data = ttk.Combobox(form, state="readonly")
+        self.data.grid(row=1, column=1)
+
+        tk.Label(form, text="Duração").grid(row=2, column=0)
+        self.duracao = ttk.Combobox(form, values=[30,45,60,75,90,120], state="readonly")
+        self.duracao.grid(row=2, column=1)
+        self.duracao.current(2)
+
+        botoes = tk.Frame(self, bg="#B3E5FC")
+        botoes.grid(row=3, column=0, sticky="ew", padx=20, pady=10)
+
+        botoes.grid_columnconfigure(0, weight=1)
+
+        tk.Button(botoes, text="Voltar", command=lambda: self.app.show_frame("Inicio")).grid(row=0, column=0, sticky="w")
+        tk.Button(botoes, text="Adicionar", command=self.adicionar).grid(row=0, column=1)
+        tk.Button(botoes, text="Apagar", command=self.apagar).grid(row=0, column=2, sticky="e")
+        tk.Button(botoes, text="Atualizar", command=self.atualizar).grid(row=0, column=3)
 
         self.atualizar()
 
+    def gerar_datas(self):
+        hoje = date.today()
+        return [(hoje + timedelta(days=i)).isoformat() for i in range(-30, 31)]
+
+    def carregar_clientes(self):
+        clientes = gd.ler_cliente()
+        valores = [f"{c['nome']} ({c['id']})" for c in clientes if isinstance(c, dict)]
+        self.id_cliente["values"] = valores
+        if valores:
+            self.id_cliente.set(valores[0])
+        else:
+            self.id_cliente.set("Sem clientes")
+
+    def carregar_datas(self):
+        datas = self.gerar_datas()
+        self.data["values"] = datas
+        self.data.current(30)
+
+    def limpar_orfaos(self):
+        clientes = gd.ler_cliente()
+        ids_validos = {int(c["id"]) for c in clientes if isinstance(c, dict)}
+
+        sessoes = gd.ler_sessao()
+        sessoes = [s for s in sessoes if int(s.get("id_cliente")) in ids_validos]
+
+        gd.guardar_ficheiro("dados/sessoes.json", sessoes)
+
+    def atualizar(self):
+        self.limpar_orfaos()
+        self.carregar_clientes()
+        self.carregar_datas()
+
+        self.lista.delete(*self.lista.get_children())
+
+        for s in gd.ler_sessao():
+            self.lista.insert("", "end", values=(
+                s.get("id"),
+                s.get("id_cliente"),
+                s.get("data"),
+                s.get("duracao")
+            ))
+
     def adicionar(self):
         try:
-            texto = self.id_cliente.get()
-            id_cliente = int(texto.split("(")[-1].replace(")", ""))
+            id_cliente = int(self.id_cliente.get().split("(")[-1].replace(")", ""))
+            data = self.data.get()
             duracao = float(self.duracao.get())
         except:
-            messagebox.showerror("Erro", "Valores inválidos")
             return
 
         if not cliente_existe(id_cliente):
-            messagebox.showerror("Erro", "Cliente não existe")
+            self.atualizar()
             return
-
-        data = self.data.get()
 
         sessoes = gd.ler_sessao()
         novo_id = gerar_id(sessoes)
 
-        sessao = SessaoTreino(novo_id, id_cliente, data, duracao)
-        gd.guardar_sessao(sessao)
-
+        gd.guardar_sessao(SessaoTreino(novo_id, id_cliente, data, duracao))
         self.atualizar()
 
-    def atualizar(self):
-        self.lista.delete(0, tk.END)
-        for s in gd.ler_sessao():
-            self.lista.insert(tk.END, f"{s['id']} - Cliente {s['id_cliente']}")
+    def apagar(self):
+        sel = self.lista.selection()
+        if not sel:
+            return
+
+        id_sessao = self.lista.item(sel)["values"][0]
+
+        sessoes = gd.ler_sessao()
+        sessoes = [s for s in sessoes if s.get("id") != id_sessao]
+
+        gd.guardar_ficheiro("dados/sessoes.json", sessoes)
+        self.atualizar()
 
 
 # ---------------------- ESTATÍSTICAS ----------------------
@@ -433,29 +464,97 @@ class SessoesFrame(tk.Frame):
 class EstatisticasFrame(tk.Frame):
     def __init__(self, parent, app):
         super().__init__(parent)
+        self.app = app
 
         tk.Label(self, text="Estatísticas", font=("Arial", 16)).pack(pady=10)
 
-        self.label = tk.Label(self, text="")
+        self.label = tk.Label(self, text="", justify="left")
         self.label.pack(pady=10)
 
         tk.Button(self, text="Atualizar", command=self.calcular).pack(pady=5)
+        tk.Button(self, text="Simular Progresso", command=self.simular_progresso).pack(pady=5)
         tk.Button(self, text="Voltar", command=lambda: app.show_frame("Inicio")).pack()
 
     def calcular(self):
         sessoes = gd.ler_sessao()
+        clientes = gd.ler_cliente()
+        planos = gd.ler_plano()
 
-        contagem = {}
-        for s in sessoes:
-            cid = s["id_cliente"]
-            contagem[cid] = contagem.get(cid, 0) + 1
-
-        if not contagem:
+        if not sessoes:
             self.label.config(text="Sem dados")
             return
 
-        top = max(contagem, key=contagem.get)
-        self.label.config(text=f"Cliente mais ativo: {top} ({contagem[top]} sessões)")
+        contagem = Counter([s["id_cliente"] for s in sessoes])
+
+        mais_ativo_id = max(contagem, key=contagem.get)
+        menos_ativo_id = min(contagem, key=contagem.get)
+
+        clientes_dict = {c["id"]: c["nome"] for c in clientes}
+
+        exercicios = []
+        for p in planos:
+            exercicios.extend(p.get("lista_exercicios", []))
+
+        exercicios_count = Counter(exercicios)
+        mais_comum = exercicios_count.most_common(1)[0][0] if exercicios_count else "N/A"
+
+        texto = (
+            f"Cliente mais ativo: {clientes_dict.get(mais_ativo_id, mais_ativo_id)} ({contagem[mais_ativo_id]} sessões)\n"
+            f"Cliente menos ativo: {clientes_dict.get(menos_ativo_id, menos_ativo_id)} ({contagem[menos_ativo_id]} sessões)\n\n"
+            f"Exercício mais comum: {mais_comum}"
+        )
+
+        self.label.config(text=texto)
+
+    def simular_progresso(self):
+        sessoes = gd.ler_sessao()
+        clientes = gd.ler_cliente()
+        planos = gd.ler_plano()
+
+        atividade = {}
+        for s in sessoes:
+            cid = s["id_cliente"]
+            atividade[cid] = atividade.get(cid, 0) + 1
+
+        plano_por_cliente = {p["id_cliente"]: p for p in planos}
+
+        novos_clientes = []
+
+        for c in clientes:
+            cid = c["id"]
+            peso = float(c["peso"])
+
+            plano = plano_por_cliente.get(cid)
+
+            if not plano:
+                novos_clientes.append(c)
+                continue
+
+            objetivo = plano["objetivo"].lower()
+            freq = atividade.get(cid, 0)
+
+            if "ganhar" in objetivo or "massa" in objetivo:
+                if freq >= 3:
+                    peso += 0.8
+                elif freq >= 1:
+                    peso += 0.3
+                else:
+                    peso -= 0.2
+
+            elif "perder" in objetivo:
+                if freq >= 3:
+                    peso -= 0.8
+                elif freq >= 1:
+                    peso -= 0.3
+                else:
+                    peso += 0.2
+
+            c["peso"] = round(peso, 2)
+            novos_clientes.append(c)
+
+        gd.guardar_ficheiro("dados/clientes.json", novos_clientes)
+
+        self.calcular()
 
 
 # ---------------------- APP ----------------------
