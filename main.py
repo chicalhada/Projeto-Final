@@ -105,7 +105,8 @@ class ClientesFrame(tk.Frame):
 
         tk.Button(botoes, text="Voltar", command=lambda: app.show_frame("Inicio")).grid(row=0, column=0, sticky="w")
         tk.Button(botoes, text="Adicionar", command=self.adicionar).grid(row=0, column=1)
-        tk.Button(botoes, text="Apagar Cliente", command=self.apagar).grid(row=0, column=2, sticky="e")
+        tk.Button(botoes, text="Apagar Cliente", command=self.apagar).grid(row=0, column=2)
+        tk.Button(botoes, text="Atualizar", command=self.atualizar).grid(row=0, column=3, sticky="e")
 
         self.atualizar()
 
@@ -159,8 +160,7 @@ class ClientesFrame(tk.Frame):
         self.atualizar()
 
     def atualizar(self):
-        for item in self.lista.get_children():
-            self.lista.delete(item)
+        self.lista.delete(*self.lista.get_children())
 
         for c in gd.ler_cliente():
             self.lista.insert("", "end", values=(
@@ -476,12 +476,16 @@ class EstatisticasFrame(tk.Frame):
         tk.Button(self, text="Voltar", command=lambda: app.show_frame("Inicio")).pack()
 
     def calcular(self):
-        sessoes = gd.ler_sessao()
         clientes = gd.ler_cliente()
+        sessoes = gd.ler_sessao()
         planos = gd.ler_plano()
 
-        if not sessoes:
+        if not clientes:
             self.label.config(text="Sem dados")
+            return
+
+        if not sessoes:
+            self.label.config(text="Sem sessões")
             return
 
         contagem = Counter([s["id_cliente"] for s in sessoes])
@@ -489,73 +493,67 @@ class EstatisticasFrame(tk.Frame):
         mais_ativo_id = max(contagem, key=contagem.get)
         menos_ativo_id = min(contagem, key=contagem.get)
 
-        clientes_dict = {c["id"]: c["nome"] for c in clientes}
+        clientes_dict = {c["id"]: c for c in clientes}
 
+        mais_comum = "N/A"
         exercicios = []
         for p in planos:
             exercicios.extend(p.get("lista_exercicios", []))
 
-        exercicios_count = Counter(exercicios)
-        mais_comum = exercicios_count.most_common(1)[0][0] if exercicios_count else "N/A"
+        if exercicios:
+            mais_comum = Counter(exercicios).most_common(1)[0][0]
 
         texto = (
-            f"Cliente mais ativo: {clientes_dict.get(mais_ativo_id, mais_ativo_id)} ({contagem[mais_ativo_id]} sessões)\n"
-            f"Cliente menos ativo: {clientes_dict.get(menos_ativo_id, menos_ativo_id)} ({contagem[menos_ativo_id]} sessões)\n\n"
-            f"Exercício mais comum: {mais_comum}"
+            f"Cliente mais ativo: {clientes_dict.get(mais_ativo_id, {}).get('nome', mais_ativo_id)}\n"
+            f"Cliente menos ativo: {clientes_dict.get(menos_ativo_id, {}).get('nome', menos_ativo_id)}\n\n"
+            f"Exercício mais comum: {mais_comum}\n\n"
+            f"--- PESOS ATUAIS ---\n"
         )
+
+        for c in clientes:
+            texto += f"{c['nome']}: {c['peso']}kg\n"
 
         self.label.config(text=texto)
 
     def simular_progresso(self):
-        sessoes = gd.ler_sessao()
         clientes = gd.ler_cliente()
+        sessoes = gd.ler_sessao()
         planos = gd.ler_plano()
 
+        plano_por_cliente = {p["id_cliente"]: p for p in planos}
+
         atividade = {}
+
         for s in sessoes:
             cid = s["id_cliente"]
-            atividade[cid] = atividade.get(cid, 0) + 1
-
-        plano_por_cliente = {p["id_cliente"]: p for p in planos}
+            atividade[cid] = atividade.get(cid, 0) + float(s["duracao"]) / 60
 
         novos_clientes = []
 
         for c in clientes:
             cid = c["id"]
             peso = float(c["peso"])
-
             plano = plano_por_cliente.get(cid)
 
-            if not plano:
-                novos_clientes.append(c)
-                continue
+            if plano:
+                objetivo = plano["objetivo"].lower()
+                dias = int(plano["dias_semana"])
+                treino = atividade.get(cid, 0)
 
-            objetivo = plano["objetivo"].lower()
-            freq = atividade.get(cid, 0)
+                if "massa" in objetivo:
+                    peso += treino * 0.2 + dias * 0.1
+                elif "perder" in objetivo:
+                    peso -= treino * 0.2 + dias * 0.1
 
-            if "ganhar" in objetivo or "massa" in objetivo:
-                if freq >= 3:
-                    peso += 0.8
-                elif freq >= 1:
-                    peso += 0.3
-                else:
-                    peso -= 0.2
+            if peso < 40:
+                peso = 40
 
-            elif "perder" in objetivo:
-                if freq >= 3:
-                    peso -= 0.8
-                elif freq >= 1:
-                    peso -= 0.3
-                else:
-                    peso += 0.2
-
-            c["peso"] = round(peso, 2)
+            c["peso"] = round(peso, 1)
             novos_clientes.append(c)
 
         gd.guardar_ficheiro("dados/clientes.json", novos_clientes)
 
         self.calcular()
-
 
 # ---------------------- APP ----------------------
 

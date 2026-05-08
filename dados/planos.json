@@ -42,5 +42,16 @@
             "Flex\u00f5es"
         ],
         "dias_semana": 4
+    },
+    {
+        "id": 5,
+        "id_cliente": 5,
+        "objetivo": "Ganhar Massa",
+        "lista_exercicios": [
+            "Agachamento",
+            "Flex\u00f5es",
+            "Supino"
+        ],
+        "dias_semana": 6
     }
 ]

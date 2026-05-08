@@ -46,5 +46,11 @@
         "id_cliente": 4,
         "data": "2026-04-09",
         "duracao": 60.0
+    },
+    {
+        "id": 9,
+        "id_cliente": 5,
+        "data": "2026-05-08",
+        "duracao": 60.0
     }
 ]
