@@ -29,19 +29,25 @@ class InicioFrame(tk.Frame):
     def __init__(self, parent, app):
         super().__init__(parent)
 
-        tk.Label(self, text="Gestor de Ginásio", font=("Times New Roman", 42)).pack(pady=20)
+        tk.Label(
+            self,
+            text="🏋 Gestor de Ginásio",
+            font=("Segoe UI", 34, "bold"),
+            bg="#EAF4F4",
+            fg="#2F5061"
+        ).pack(pady=40)
 
-        tk.Button(self, text="Clientes", width=20,
-                  command=lambda: app.show_frame("Clientes")).pack(pady=5)
+        ttk.Button(self, text="👥 Clientes", width=25,
+                   command=lambda: app.show_frame("Clientes")).pack(pady=8)
 
-        tk.Button(self, text="Planos", width=20,
-                  command=lambda: app.show_frame("Planos")).pack(pady=5)
+        ttk.Button(self, text="📋 Planos", width=25,
+                   command=lambda: app.show_frame("Planos")).pack(pady=8)
 
-        tk.Button(self, text="Sessões", width=20,
-                  command=lambda: app.show_frame("Sessoes")).pack(pady=5)
+        ttk.Button(self, text="🏋️ Sessões", width=25,
+                   command=lambda: app.show_frame("Sessoes")).pack(pady=8)
 
-        tk.Button(self, text="Estatísticas", width=20,
-                  command=lambda: app.show_frame("Estatisticas")).pack(pady=5)
+        ttk.Button(self, text="📊 Estatísticas", width=25,
+                   command=lambda: app.show_frame("Estatisticas")).pack(pady=8)
 
 
 # ---------------------- CLIENTES ----------------------
@@ -51,11 +57,13 @@ class ClientesFrame(tk.Frame):
         super().__init__(parent)
         self.app = app
 
-        tk.Label(self, text="Clientes", font=("Arial", 16)).grid(row=0, column=0, pady=10)
-
-        style = ttk.Style()
-        style.configure("Treeview", rowheight=25, borderwidth=1, relief="solid")
-        style.configure("Treeview.Heading", borderwidth=1, relief="solid")
+        tk.Label(
+            self,
+            text="👥 Clientes",
+            font=("Segoe UI", 22, "bold"),
+            bg="#EAF4F4",
+            fg="#2F5061"
+        ).grid(row=0, column=0, pady=10)
 
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(0, weight=1)
@@ -76,37 +84,86 @@ class ClientesFrame(tk.Frame):
 
         self.lista.grid(row=1, column=0, sticky="nsew", padx=20, pady=10)
 
-        form = tk.Frame(self)
+        form = tk.Frame(self, bg="#EAF4F4")
         form.grid(row=2, column=0, pady=10)
 
-        tk.Label(form, text="Nome").grid(row=0, column=0)
-        self.nome = tk.Entry(form)
-        self.nome.grid(row=0, column=1)
+        tk.Label(
+            form,
+            text="Nome",
+            bg="#EAF4F4",
+            font=("Segoe UI", 10, "bold"),
+            fg="#333"
+        ).grid(row=0, column=0, padx=5, pady=5)
 
-        tk.Label(form, text="Idade").grid(row=1, column=0)
+        self.nome = tk.Entry(form)
+        self.nome.grid(row=0, column=1, padx=5, pady=5)
+
+        tk.Label(
+            form,
+            text="Idade",
+            bg="#EAF4F4",
+            font=("Segoe UI", 10, "bold"),
+            fg="#333"
+        ).grid(row=1, column=0, padx=5, pady=5)
+
         self.idade = ttk.Combobox(form, values=[str(i) for i in range(14, 81)])
-        self.idade.grid(row=1, column=1)
+        self.idade.grid(row=1, column=1, padx=5, pady=5)
         self.idade.set("Idade")
 
-        tk.Label(form, text="Peso").grid(row=2, column=0)
+        tk.Label(
+            form,
+            text="Peso",
+            bg="#EAF4F4",
+            font=("Segoe UI", 10, "bold"),
+            fg="#333"
+        ).grid(row=2, column=0, padx=5, pady=5)
+
         self.peso = ttk.Combobox(form, values=[str(i) for i in range(40, 151)])
-        self.peso.grid(row=2, column=1)
+        self.peso.grid(row=2, column=1, padx=5, pady=5)
         self.peso.set("Peso")
 
-        tk.Label(form, text="Objetivo").grid(row=3, column=0)
+        tk.Label(
+            form,
+            text="Objetivo",
+            bg="#EAF4F4",
+            font=("Segoe UI", 10, "bold"),
+            fg="#333"
+        ).grid(row=3, column=0, padx=5, pady=5)
+
         self.objetivo = ttk.Combobox(form, values=["Ganhar Massa", "Perder Peso"])
-        self.objetivo.grid(row=3, column=1)
+        self.objetivo.grid(row=3, column=1, padx=5, pady=5)
         self.objetivo.set("Objetivo")
 
-        botoes = tk.Frame(self, bg="#B3E5FC")
+        botoes = tk.Frame(self, bg="#EAF4F4")
         botoes.grid(row=3, column=0, sticky="ew", padx=20, pady=10)
 
         botoes.grid_columnconfigure(0, weight=1)
 
-        tk.Button(botoes, text="Voltar", command=lambda: app.show_frame("Inicio")).grid(row=0, column=0, sticky="w")
-        tk.Button(botoes, text="Adicionar", command=self.adicionar).grid(row=0, column=1)
-        tk.Button(botoes, text="Apagar Cliente", command=self.apagar).grid(row=0, column=2)
-        tk.Button(botoes, text="Atualizar", command=self.atualizar).grid(row=0, column=3, sticky="e")
+        ttk.Button(
+            botoes,
+            text="⬅ Voltar",
+            command=lambda: app.show_frame("Inicio")
+        ).grid(row=0, column=0, sticky="w")
+
+        ttk.Button(
+            botoes,
+            text="➕ Adicionar",
+            command=self.adicionar,
+            style="Add.TButton"
+        ).grid(row=0, column=1, padx=5)
+
+        ttk.Button(
+            botoes,
+            text="🗑 Apagar Cliente",
+            command=self.apagar,
+            style="Delete.TButton"
+        ).grid(row=0, column=2, padx=5)
+
+        ttk.Button(
+            botoes,
+            text="🔄 Atualizar",
+            command=self.atualizar
+        ).grid(row=0, column=3, sticky="e")
 
         self.atualizar()
 
@@ -179,7 +236,13 @@ class PlanosFrame(tk.Frame):
         super().__init__(parent)
         self.app = app
 
-        tk.Label(self, text="Planos", font=("Arial", 16)).grid(row=0, column=0, pady=10)
+        tk.Label(
+            self,
+            text="📋 Planos",
+            font=("Segoe UI", 22, "bold"),
+            bg="#EAF4F4",
+            fg="#2F5061"
+        ).grid(row=0, column=0, pady=10)
 
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(0, weight=1)
@@ -202,32 +265,59 @@ class PlanosFrame(tk.Frame):
 
         self.lista.grid(row=1, column=0, sticky="nsew", padx=20, pady=10)
 
-        form = tk.Frame(self)
+        form = tk.Frame(self, bg="#EAF4F4")
         form.grid(row=2, column=0, pady=10)
 
-        tk.Label(form, text="Cliente").grid(row=0, column=0)
-        self.entry_cliente = ttk.Combobox(form, state="readonly")
-        self.entry_cliente.grid(row=0, column=1)
+        tk.Label(form, text="Cliente", bg="#EAF4F4",
+                 font=("Segoe UI", 10, "bold"), fg="#333").grid(row=0, column=0, padx=5, pady=5)
 
-        tk.Label(form, text="Objetivo").grid(row=1, column=0)
+        self.entry_cliente = ttk.Combobox(form, state="readonly")
+        self.entry_cliente.grid(row=0, column=1, padx=5, pady=5)
+
+        tk.Label(form, text="Objetivo", bg="#EAF4F4",
+                 font=("Segoe UI", 10, "bold"), fg="#333").grid(row=1, column=0, padx=5, pady=5)
+
         self.objetivo = ttk.Combobox(form, values=["Ganhar Massa", "Perder Peso"], state="readonly")
-        self.objetivo.grid(row=1, column=1)
+        self.objetivo.grid(row=1, column=1, padx=5, pady=5)
         self.objetivo.current(0)
 
-        tk.Label(form, text="Dias").grid(row=2, column=0)
+        tk.Label(form, text="Dias", bg="#EAF4F4",
+                 font=("Segoe UI", 10, "bold"), fg="#333").grid(row=2, column=0, padx=5, pady=5)
+
         self.dias = ttk.Combobox(form, values=["1","2","3","4","5","6","7"], state="readonly")
-        self.dias.grid(row=2, column=1)
+        self.dias.grid(row=2, column=1, padx=5, pady=5)
         self.dias.current(2)
 
-        botoes = tk.Frame(self, bg="#B3E5FC")
+        botoes = tk.Frame(self, bg="#EAF4F4")
         botoes.grid(row=3, column=0, sticky="ew", padx=20, pady=10)
 
         botoes.grid_columnconfigure(0, weight=1)
 
-        tk.Button(botoes, text="Voltar", command=lambda: self.app.show_frame("Inicio")).grid(row=0, column=0, sticky="w")
-        tk.Button(botoes, text="Gerar Plano", command=self.gerar).grid(row=0, column=1)
-        tk.Button(botoes, text="Apagar Plano", command=self.apagar).grid(row=0, column=2, sticky="e")
-        tk.Button(botoes, text="Atualizar", command=self.atualizar).grid(row=0, column=3)
+        ttk.Button(
+            botoes,
+            text="⬅ Voltar",
+            command=lambda: self.app.show_frame("Inicio")
+        ).grid(row=0, column=0, sticky="w")
+
+        ttk.Button(
+            botoes,
+            text="➕ Gerar Plano",
+            command=self.gerar,
+            style="Add.TButton"
+        ).grid(row=0, column=1, padx=5)
+
+        ttk.Button(
+            botoes,
+            text="🗑 Apagar Plano",
+            command=self.apagar,
+            style="Delete.TButton"
+        ).grid(row=0, column=2, sticky="e", padx=5)
+
+        ttk.Button(
+            botoes,
+            text="🔄 Atualizar",
+            command=self.atualizar
+        ).grid(row=0, column=3, padx=5)
 
         self.atualizar()
 
@@ -327,7 +417,8 @@ class PlanosFrame(tk.Frame):
 
         gd.guardar_ficheiro("dados/planos.json", planos)
         self.atualizar()
-            
+
+
 # ---------------------- SESSÕES ----------------------
 
 class SessoesFrame(tk.Frame):
@@ -335,7 +426,13 @@ class SessoesFrame(tk.Frame):
         super().__init__(parent)
         self.app = app
 
-        tk.Label(self, text="Sessões", font=("Arial", 16)).grid(row=0, column=0, pady=10)
+        tk.Label(
+            self,
+            text="🏋️ Sessões",
+            font=("Segoe UI", 22, "bold"),
+            bg="#EAF4F4",
+            fg="#2F5061"
+        ).grid(row=0, column=0, pady=10)
 
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(0, weight=1)
@@ -357,31 +454,58 @@ class SessoesFrame(tk.Frame):
 
         self.lista.grid(row=1, column=0, sticky="nsew", padx=20, pady=10)
 
-        form = tk.Frame(self)
+        form = tk.Frame(self, bg="#EAF4F4")
         form.grid(row=2, column=0, pady=10)
 
-        tk.Label(form, text="Cliente").grid(row=0, column=0)
+        tk.Label(form, text="Cliente", bg="#EAF4F4",
+                 font=("Segoe UI", 10, "bold"), fg="#333").grid(row=0, column=0, padx=5, pady=5)
+
         self.id_cliente = ttk.Combobox(form, state="readonly")
-        self.id_cliente.grid(row=0, column=1)
+        self.id_cliente.grid(row=0, column=1, padx=5, pady=5)
 
-        tk.Label(form, text="Data").grid(row=1, column=0)
+        tk.Label(form, text="Data", bg="#EAF4F4",
+                 font=("Segoe UI", 10, "bold"), fg="#333").grid(row=1, column=0, padx=5, pady=5)
+
         self.data = ttk.Combobox(form, state="readonly")
-        self.data.grid(row=1, column=1)
+        self.data.grid(row=1, column=1, padx=5, pady=5)
 
-        tk.Label(form, text="Duração").grid(row=2, column=0)
+        tk.Label(form, text="Duração", bg="#EAF4F4",
+                 font=("Segoe UI", 10, "bold"), fg="#333").grid(row=2, column=0, padx=5, pady=5)
+
         self.duracao = ttk.Combobox(form, values=[30,45,60,75,90,120], state="readonly")
-        self.duracao.grid(row=2, column=1)
+        self.duracao.grid(row=2, column=1, padx=5, pady=5)
         self.duracao.current(2)
 
-        botoes = tk.Frame(self, bg="#B3E5FC")
+        botoes = tk.Frame(self, bg="#EAF4F4")
         botoes.grid(row=3, column=0, sticky="ew", padx=20, pady=10)
 
         botoes.grid_columnconfigure(0, weight=1)
 
-        tk.Button(botoes, text="Voltar", command=lambda: self.app.show_frame("Inicio")).grid(row=0, column=0, sticky="w")
-        tk.Button(botoes, text="Adicionar", command=self.adicionar).grid(row=0, column=1)
-        tk.Button(botoes, text="Apagar", command=self.apagar).grid(row=0, column=2, sticky="e")
-        tk.Button(botoes, text="Atualizar", command=self.atualizar).grid(row=0, column=3)
+        ttk.Button(
+            botoes,
+            text="⬅ Voltar",
+            command=lambda: self.app.show_frame("Inicio")
+        ).grid(row=0, column=0, sticky="w")
+
+        ttk.Button(
+            botoes,
+            text="➕ Adicionar",
+            command=self.adicionar,
+            style="Add.TButton"
+        ).grid(row=0, column=1, padx=5)
+
+        ttk.Button(
+            botoes,
+            text="🗑 Apagar",
+            command=self.apagar,
+            style="Delete.TButton"
+        ).grid(row=0, column=2, sticky="e", padx=5)
+
+        ttk.Button(
+            botoes,
+            text="🔄 Atualizar",
+            command=self.atualizar
+        ).grid(row=0, column=3, padx=5)
 
         self.atualizar()
 
@@ -466,14 +590,42 @@ class EstatisticasFrame(tk.Frame):
         super().__init__(parent)
         self.app = app
 
-        tk.Label(self, text="Estatísticas", font=("Arial", 16)).pack(pady=10)
+        tk.Label(
+            self,
+            text="📊 Estatísticas",
+            font=("Segoe UI", 22, "bold"),
+            bg="#EAF4F4",
+            fg="#2F5061"
+        ).pack(pady=10)
 
-        self.label = tk.Label(self, text="", justify="left")
+        self.label = tk.Label(
+            self,
+            text="",
+            justify="left",
+            bg="#EAF4F4",
+            font=("Segoe UI", 11),
+            fg="#333"
+        )
         self.label.pack(pady=10)
 
-        tk.Button(self, text="Atualizar", command=self.calcular).pack(pady=5)
-        tk.Button(self, text="Simular Progresso", command=self.simular_progresso).pack(pady=5)
-        tk.Button(self, text="Voltar", command=lambda: app.show_frame("Inicio")).pack()
+        ttk.Button(
+            self,
+            text="🔄 Atualizar",
+            command=self.calcular
+        ).pack(pady=5)
+
+        ttk.Button(
+            self,
+            text="📈 Simular Progresso",
+            command=self.simular_progresso,
+            style="Add.TButton"
+        ).pack(pady=5)
+
+        ttk.Button(
+            self,
+            text="⬅ Voltar",
+            command=lambda: app.show_frame("Inicio")
+        ).pack(pady=5)
 
     def calcular(self):
         clientes = gd.ler_cliente()
@@ -555,6 +707,7 @@ class EstatisticasFrame(tk.Frame):
 
         self.calcular()
 
+
 # ---------------------- APP ----------------------
 
 class App(tk.Tk):
@@ -562,12 +715,75 @@ class App(tk.Tk):
         super().__init__()
 
         self.title("Gestor de Ginásio")
-        self.geometry("800x500")
+        self.geometry("900x600")
 
-        self.configure(bg="#B3E5FC")
+        self.configure(bg="#EAF4F4")
 
-        container = tk.Frame(self, bg="#B3E5FC")
-        container.pack(fill="both", expand=True)
+        style = ttk.Style()
+        style.theme_use("clam")
+
+        style.configure(
+            "Treeview",
+            background="white",
+            foreground="#222",
+            rowheight=28,
+            fieldbackground="white",
+            borderwidth=0,
+            font=("Arial", 10)
+        )
+
+        style.configure(
+            "Treeview.Heading",
+            background="#4F6D7A",
+            foreground="white",
+            font=("Arial", 10, "bold"),
+            relief="flat"
+        )
+
+        style.map(
+            "Treeview",
+            background=[("selected", "#A7D3F2")]
+        )
+
+        style.configure(
+            "TButton",
+            font=("Arial", 10, "bold"),
+            padding=6
+        )
+
+        style.configure(
+            "Add.TButton",
+            font=("Arial", 10, "bold"),
+            padding=6,
+            background="#81C784",
+            foreground="white"
+        )
+
+        style.map(
+            "Add.TButton",
+            background=[("active", "#66BB6A")]
+        )
+
+        style.configure(
+            "Delete.TButton",
+            font=("Arial", 10, "bold"),
+            padding=6,
+            background="#E57373",
+            foreground="white"
+        )
+
+        style.map(
+            "Delete.TButton",
+            background=[("active", "#EF5350")]
+        )
+
+        style.configure(
+            "TCombobox",
+            padding=4
+        )
+
+        container = tk.Frame(self, bg="#EAF4F4")
+        container.pack(fill="both", expand=True, padx=15, pady=15)
 
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
@@ -582,7 +798,7 @@ class App(tk.Tk):
             (EstatisticasFrame, "Estatisticas")
         ]:
             frame = F(container, self)
-            frame.configure(bg="#B3E5FC")
+            frame.configure(bg="#EAF4F4")
             self.frames[name] = frame
             frame.grid(row=0, column=0, sticky="nsew")
 
